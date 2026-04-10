@@ -12,58 +12,69 @@
 <img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png" width="100%">
 </div>
 
-## 🐄 What is LiveSense AI?
+## 🐄 What is LiveSense AI? (Project Overview)
 
-**LiveSense AI** is a state-of-the-art, edge-optimized Machine Learning pipeline designed to detect *Subclinical Mastitis (SCM)* in dairy cows. Unlike clinical mastitis, SCM shows **no visible symptoms** but causes severe milk yield drops, making manual inspection completely ineffective.
+**LiveSense AI** is a state-of-the-art, edge-optimized Machine Learning pipeline designed to solve a ₹13,000 Crore problem in the Indian dairy industry: **Subclinical Mastitis (SCM)**. 
 
-By leveraging **10Hz triaxial accelerometer data** from WASP IoT collars, LiveSense AI eliminates the need for expensive diagnostic tests (like AMS or Lab Cultures) and provides a highly scalable solution tailored for smallholder farmers in India.
+Unlike clinical mastitis, SCM shows **no visible physical symptoms** (the cow looks healthy, the milk looks normal), but it causes severe internal pain and up to a 20% drop in milk yield. Manual inspection completely fails here. Expensive western technologies like Auto-Milking Systems (AMS) cost ₹20–50 Lakhs, isolating 86% of Indian farmers.
 
-> 📖 *(For an in-depth understanding of the system, hardware architecture, and deep learning algorithms, please refer to the included **`final_report.pdf`**).*
+**Our Solution:** By leveraging frugal **10Hz triaxial accelerometer data** from a simple neck collar (WASP IoT), LiveSense AI continuously monitors behavioral shifts. The data is processed locally on a **Raspberry Pi 4 Edge Node**. This completely eliminates the need for expensive diagnostic tests and internet dependency, delivering a highly scalable, real-time alert system.
 
-<br>
-<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.png" width="100%">
+---
+
+## 🏗️ System Architecture & Entity Relationships
+
+The entire infrastructure has been designed with strict constraints for cost, power, and offline functionality. Our ER mapping connects the physical cow all the way to the logical model and final farmer alerts.
+
+<div align="center">
+  <img src="assets/er_diagram.png" width="80%" alt="LiveSense Entity Relationship Diagram">
+</div>
+
+---
 
 ## 🔬 Core Innovations (The Magic Behind the AI)
 
-<details>
-<summary><b>1️⃣ Solving Extreme Imbalance with GenAI (CVAE)</b></summary>
-<br>
-Real-world farming data exhibits extreme imbalance (a staggering <b>1:5793</b> sick-to-healthy ratio). Traditional models silently fail here. We implemented a <b>Conditional Variational Autoencoder (CVAE) with a Bi-LSTM Encoder</b> to deeply learn the hidden biological signatures of the disease. The module synthesizes highly realistic "sick" behavior patterns, boosting model Sensitivity (Recall) by 36% compared to SMOTE.
-</details>
+### 1️⃣ Solving the Data Paradox with GenAI (CVAE)
+Real-world farming data exhibits an extreme imbalance. In our processed database (CowScreeningDB), there is a staggering **1:5793 sick-to-healthy ratio**! Traditional models (and even old techniques like SMOTE) silently fail because they just draw linear lines between rare sick points.
 
-<details>
-<summary><b>2️⃣ The Stacking Ensemble Decision Maker</b></summary>
-<br>
-Instead of relying on one algorithm, our model uses a hierarchical "Committee of Experts":
-<ul>
-  <li><b>Level 0 Base Learners:</b> XGBoost (Gradient Boosting), Random Forest, and SVM.</li>
-  <li><b>Level 1 Meta-Learner:</b> Logistic Regression to aggregate opinions and minimize False Alarms.</li>
-</ul>
-</details>
+To solve this, we implemented a **Conditional Variational Autoencoder (CVAE)** with a Bi-LSTM mechanism. 
 
-<details>
-<summary><b>3️⃣ Edge Optimization (Hardware)</b></summary>
-<br>
-The final trained model is structurally lightweight, allowing local execution directly on a <b>Raspberry Pi 4 Edge Node</b>. This removes internet dependency entirely, reduces inference latency to <100ms, and slashes hardware costs by 87%.
-</details>
+<div align="center">
+  <img src="assets/cvae.png" width="70%" alt="CVAE Architecture">
+</div>
 
-<br>
-<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.png" width="100%">
+**How it works:**
+* The Bi-LSTM Encoder learns the complex temporal "sickness signatures" and compresses them into a mathematical Latent Space.
+* Instead of copying data, it learns the **biological essence** of the pain.
+* The LSTM Decoder acts as our "Dream Machine", synthesizing infinite realistic variations of "sick" cows perfectly. This single innovation boosted Sensitivity (Recall) by 36%.
 
-## 🎯 Model Validation Results
+### 2️⃣ The Stacking Ensemble Decision Maker
+Instead of relying on just one algorithm, LiveSense constructs a hierarchical **"Committee of Experts"**.
 
-Compiled and validated using rigorous **Stratified 5-Fold Cross-Validation** (ensuring absolute zero data-leakage):
+<div align="center">
+  <img src="assets/stacking.png" width="70%" alt="Stacking Ensemble Classifier">
+</div>
+
+**How it works:**
+* **Level-0 Base Learners:** `XGBoost` catches complex shifts in routine, `Random Forest` provides extreme stability against noise, and `SVM` defines rigid boundaries.
+* **Level-1 Meta-Learner:** A `Logistic Regression` judge steps in at the end to aggregate all level-0 opinions to ensure that False Alarms are mathematically minimized.
+
+---
+
+## 🎯 Final Mission Validation Results
+
+Compiled and validated using rigorous **Stratified 5-Fold Cross-Validation** to ensure absolute zero data-leakage (a critical requirement for our research publication):
 
 - 🟢 **Average ROC-AUC Score:** `0.77 (77%)`
-- 🔥 **Average Sensitivity (Recall):** `1.00 (100%)` - *Meeting and greatly exceeding research standards!*
-- 📦 **Final Output:** Production binary dump (`mastitis_ultra_model.pkl`) stored locally.
+- 🔥 **Average Sensitivity (Recall)::** `1.00 (100%)` - *It never misses a sick cow!*
+- 📦 **Output Binary:** The heavily compressed `mastitis_ultra_model.pkl` is loaded instantly on the edge devices.
 
 <br>
 <img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.png" width="100%">
 
 ## 💻 Running the Project (Windows / Mac / Linux)
 
-Running complex Machine Learning code on Windows can sometimes lead to missing libraries or `ModuleNotFoundError`. We have strictly optimized the deployment process so you can run it perfectly. 
+Running complex Machine Learning code on Windows can sometimes lead to missing libraries or `ModuleNotFoundError`. We have strictly optimized the deployment process so you can test it flawlessly.
 
 ### 🐳 Method 1: The Docker Route (Highly Recommended)
 This packages the entire OS, Python environment, and Code into a single bulletproof container.
@@ -103,7 +114,7 @@ If you don't want to use Docker, use this standard Python approach.
    cd src\GenAI_Mastitis
    python final_model_stacking_cvae.py
    ```
-   *(You should see the Terminal begin extracting 696 features followed by the 5-Fold Validation scoring).*
+   *(You should see the Terminal begin extracting 696 statistical features followed by the 5-Fold Validation prints).*
 
 ---
 <div align="center">
