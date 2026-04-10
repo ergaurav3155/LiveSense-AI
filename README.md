@@ -27,7 +27,11 @@ Unlike clinical mastitis, SCM shows **no visible physical symptoms** (the cow lo
 The entire infrastructure has been designed with strict constraints for cost, power, and offline functionality. Our ER mapping connects the physical cow all the way to the logical model and final farmer alerts.
 
 <div align="center">
-  <img src="assets/er_diagram.png" width="80%" alt="LiveSense Entity Relationship Diagram">
+  <a href="assets/artitecture.pdf" target="_blank">
+    <img src="assets/er_diagram.png" width="80%" alt="LiveSense Entity Relationship Diagram">
+  </a>
+  <br>
+  <em>(Click the image or <a href="assets/artitecture.pdf">here</a> to view/download the crisp original Vector PDF)</em>
 </div>
 
 ---
